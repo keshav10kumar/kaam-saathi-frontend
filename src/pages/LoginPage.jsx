@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { sendOtp, verifyOtp } from "../api/authApi";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
     const [phone, setPhone] = useState("");
     const [otp, setOtp] = useState("");
     const [otpSent, setOtpSent] = useState(false);
     const [message, setMessage] = useState("");
+
+    const navigate = useNavigate();
 
     const handleSendOtp = async () => {
         try {
@@ -21,10 +24,19 @@ const LoginPage = () => {
         try {
             const response = await verifyOtp(phone, otp);
 
-            // Save user (simple)
+            // ✅ IMPORTANT: store userId (REQUIRED for Day 13)
+            localStorage.setItem("userId", response.data.id);
+
+            // ✅ store phone (already correct)
+            localStorage.setItem("phone", phone);
+
+            // ✅ optional: full user object
             localStorage.setItem("user", JSON.stringify(response.data));
 
             setMessage("Login successful ✅");
+
+            navigate("/profile");
+
         } catch (error) {
             setMessage("Invalid OTP ❌");
         }
