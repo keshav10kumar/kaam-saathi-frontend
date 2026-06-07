@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import api from "../api/api";
+import api from "../api/axios";
 
 function Jobs() {
   const [jobs, setJobs] = useState([]);
-  const [appliedJobs, setAppliedJobs] = useState([]); // ✅ track applied jobs
+  const [appliedJobs, setAppliedJobs] = useState([]);
 
   useEffect(() => {
     fetchJobs();
@@ -24,11 +24,9 @@ function Jobs() {
 
       await api.post(`/jobs/${jobId}/apply?userId=${userId}`);
 
-      // ✅ Update UI instantly
       setAppliedJobs([...appliedJobs, jobId]);
 
       alert("Applied successfully ✅");
-
     } catch (error) {
       console.error("Apply failed:", error);
       alert(error.response?.data || "Something went wrong ❌");
@@ -36,7 +34,7 @@ function Jobs() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={styles.container}>
       <h2>Available Jobs</h2>
 
       {jobs.length === 0 && <p>No jobs found</p>}
@@ -46,32 +44,41 @@ function Jobs() {
 
         return (
           <div key={job.id} style={styles.card}>
-            <h3>{job.title}</h3>
-            <p>{job.description}</p>
-            <p><b>City:</b> {job.city}</p>
-            <p><b>Salary:</b> ₹{job.salary}</p>
+            <h3 style={styles.title}>{job.title}</h3>
 
-            {/* ✅ APPLY BUTTON */}
-            <button
-              style={{
-                ...styles.button,
-                backgroundColor: isApplied ? "gray" : "#007bff",
-                color: "white"
-              }}
-              disabled={isApplied}
-              onClick={() => handleApply(job.id)}
-            >
-              {isApplied ? "Applied ✅" : "Apply"}
-            </button>
+            <p style={styles.desc}>{job.description}</p>
 
-            <br /><br />
+            <p>📍 {job.city}</p>
+            <p>💰 ₹{job.salary}</p>
+            <p>📞 {job.phone}</p>
 
-            {/* ✅ CALL BUTTON */}
-            <a href={`tel:${job.phone}`}>
-              <button style={styles.callButton}>
-                Call Recruiter
+            <div style={styles.actions}>
+              {/* APPLY */}
+              <button
+                style={{
+                  ...styles.applyBtn,
+                  backgroundColor: isApplied ? "gray" : "#007bff"
+                }}
+                disabled={isApplied}
+                onClick={() => handleApply(job.id)}
+              >
+                {isApplied ? "Applied ✅" : "Apply"}
               </button>
-            </a>
+
+              {/* CALL */}
+              <a href={`tel:${job.phone}`}>
+                <button style={styles.callBtn}>Call</button>
+              </a>
+
+              {/* WHATSAPP */}
+              <a
+                href={`https://wa.me/${job.phone}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <button style={styles.whatsappBtn}>WhatsApp</button>
+              </a>
+            </div>
           </div>
         );
       })}
@@ -80,26 +87,53 @@ function Jobs() {
 }
 
 const styles = {
+  container: {
+    maxWidth: "600px",
+    margin: "auto",
+    padding: "20px"
+  },
   card: {
     border: "1px solid #ddd",
-    padding: "15px",
-    marginBottom: "12px",
-    borderRadius: "8px",
-    background: "#fafafa"
+    padding: "16px",
+    marginBottom: "16px",
+    borderRadius: "10px",
+    background: "#fff",
+    boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
   },
-  button: {
+  title: {
+    marginBottom: "5px"
+  },
+  desc: {
+    color: "#555",
+    marginBottom: "10px"
+  },
+  actions: {
+    display: "flex",
+    gap: "10px",
+    marginTop: "10px"
+  },
+  applyBtn: {
     padding: "8px 12px",
-    cursor: "pointer",
     border: "none",
-    borderRadius: "4px"
+    borderRadius: "5px",
+    color: "white",
+    cursor: "pointer"
   },
-  callButton: {
+  callBtn: {
     padding: "8px 12px",
-    cursor: "pointer",
+    border: "none",
+    borderRadius: "5px",
     backgroundColor: "green",
     color: "white",
+    cursor: "pointer"
+  },
+  whatsappBtn: {
+    padding: "8px 12px",
     border: "none",
-    borderRadius: "4px"
+    borderRadius: "5px",
+    backgroundColor: "#25D366",
+    color: "white",
+    cursor: "pointer"
   }
 };
 
