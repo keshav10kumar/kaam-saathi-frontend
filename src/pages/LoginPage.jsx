@@ -20,27 +20,25 @@ const LoginPage = () => {
         }
     };
 
-    const handleVerifyOtp = async () => {
-        try {
-            const response = await verifyOtp(phone, otp);
+const handleVerifyOtp = async () => {
+    try {
+        const response = await verifyOtp(phone, otp);
 
-            // ✅ IMPORTANT: store userId (REQUIRED for Day 13)
-            localStorage.setItem("userId", response.data.id);
+        const { token, userId, user } = response.data;
 
-            // ✅ store phone (already correct)
-            localStorage.setItem("phone", phone);
+        localStorage.setItem("token", token);
+        localStorage.setItem("userId", userId);
+        localStorage.setItem("phone", phone);
+        localStorage.setItem("user", JSON.stringify(user));
 
-            // ✅ optional: full user object
-            localStorage.setItem("user", JSON.stringify(response.data));
+        setMessage("Login successful ✅");
 
-            setMessage("Login successful ✅");
+        navigate("/profile");
 
-            navigate("/profile");
-
-        } catch (error) {
-            setMessage("Invalid OTP ❌");
-        }
-    };
+    } catch (error) {
+        setMessage("Invalid OTP ❌");
+    }
+};
 
     return (
         <div style={{ width: "300px", margin: "100px auto" }}>
