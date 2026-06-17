@@ -33,7 +33,13 @@ const handleVerifyOtp = async () => {
 
         setMessage("Login successful ✅");
 
-        navigate("/profile");
+        const role = user?.role;
+
+        if (role === "RECRUITER") {
+            navigate("/recruiter");
+        } else {
+            navigate("/profile");
+        }
 
     } catch (error) {
         setMessage("Invalid OTP ❌");
