@@ -7,6 +7,7 @@ import Profile from "./pages/Profile";
 import Jobs from "./pages/Jobs";
 import RecruiterDashboard from "./pages/RecruiterDashboard";
 import ApplicantsPage from "./pages/ApplicantsPage";
+import PostJob from "./pages/PostJob";
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/recruiter" element={<RecruiterDashboard />} />
         <Route path="/recruiter/jobs/:jobId/applications" element={<ApplicantsPage />} />
+        <Route path="/recruiter/post-job" element={<PostJob />} />
       </Routes>
     </Router>
   );

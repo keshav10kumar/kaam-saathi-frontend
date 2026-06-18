@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/axios";
+import Navbar from "../components/Navbar";
 
 function Jobs() {
   const [jobs, setJobs] = useState([]);
@@ -34,55 +35,60 @@ function Jobs() {
   };
 
   return (
-    <div style={styles.container}>
-      <h2>Available Jobs</h2>
+    <>
+      {/* ✅ Navbar Added */}
+      <Navbar />
 
-      {jobs.length === 0 && <p>No jobs found</p>}
+      <div style={styles.container}>
+        <h2>Available Jobs</h2>
 
-      {jobs.map((job) => {
-        const isApplied = appliedJobs.includes(job.id);
+        {jobs.length === 0 && <p>No jobs found</p>}
 
-        return (
-          <div key={job.id} style={styles.card}>
-            <h3 style={styles.title}>{job.title}</h3>
+        {jobs.map((job) => {
+          const isApplied = appliedJobs.includes(job.id);
 
-            <p style={styles.desc}>{job.description}</p>
+          return (
+            <div key={job.id} style={styles.card}>
+              <h3 style={styles.title}>{job.title}</h3>
 
-            <p>📍 {job.city}</p>
-            <p>💰 ₹{job.salary}</p>
-            <p>📞 {job.phone}</p>
+              <p style={styles.desc}>{job.description}</p>
 
-            <div style={styles.actions}>
-              {/* APPLY */}
-              <button
-                style={{
-                  ...styles.applyBtn,
-                  backgroundColor: isApplied ? "gray" : "#007bff"
-                }}
-                disabled={isApplied}
-                onClick={() => handleApply(job.id)}
-              >
-                {isApplied ? "Applied ✅" : "Apply"}
-              </button>
+              <p>📍 {job.city}</p>
+              <p>💰 ₹{job.salary}</p>
+              <p>📞 {job.phone}</p>
 
-              {/* CALL */}
-              <a href={`tel:${job.phone}`}>
-                <button style={styles.callBtn}>Call</button>
-              </a>
+              <div style={styles.actions}>
+                {/* APPLY */}
+                <button
+                  style={{
+                    ...styles.applyBtn,
+                    backgroundColor: isApplied ? "gray" : "#007bff"
+                  }}
+                  disabled={isApplied}
+                  onClick={() => handleApply(job.id)}
+                >
+                  {isApplied ? "Applied ✅" : "Apply"}
+                </button>
 
-              {/* WHATSAPP */}
-              <a
-                href={`https://wa.me/${job.phone}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <button style={styles.whatsappBtn}>WhatsApp</button>
-              </a>
+                {/* CALL */}
+                <a href={`tel:${job.phone}`}>
+                  <button style={styles.callBtn}>Call</button>
+                </a>
+
+                {/* WHATSAPP */}
+                <a
+                  href={`https://wa.me/${job.phone}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <button style={styles.whatsappBtn}>WhatsApp</button>
+                </a>
+              </div>
             </div>
-          </div>
-        );
-      })}
-    </div>
+          );
+        })}
+      </div>
+    </>
   );
 }
 
@@ -92,45 +98,55 @@ const styles = {
     margin: "auto",
     padding: "20px"
   },
+
+  // ✅ Improved Card UI
   card: {
     border: "1px solid #ddd",
     padding: "16px",
     marginBottom: "16px",
-    borderRadius: "10px",
+    borderRadius: "12px",
     background: "#fff",
-    boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
+    boxShadow: "0 4px 10px rgba(0,0,0,0.08)"
   },
+
   title: {
-    marginBottom: "5px"
+    marginBottom: "8px",
+    fontSize: "18px",
+    fontWeight: "bold"
   },
+
   desc: {
     color: "#555",
     marginBottom: "10px"
   },
+
   actions: {
     display: "flex",
     gap: "10px",
     marginTop: "10px"
   },
+
   applyBtn: {
     padding: "8px 12px",
     border: "none",
-    borderRadius: "5px",
+    borderRadius: "6px",
     color: "white",
     cursor: "pointer"
   },
+
   callBtn: {
     padding: "8px 12px",
     border: "none",
-    borderRadius: "5px",
+    borderRadius: "6px",
     backgroundColor: "green",
     color: "white",
     cursor: "pointer"
   },
+
   whatsappBtn: {
     padding: "8px 12px",
     border: "none",
-    borderRadius: "5px",
+    borderRadius: "6px",
     backgroundColor: "#25D366",
     color: "white",
     cursor: "pointer"

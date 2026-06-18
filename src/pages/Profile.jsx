@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { getProfile, updateProfile } from "../services/userService";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 const Profile = () => {
   const phone = localStorage.getItem("phone");
-  const navigate = useNavigate(); // ✅ added
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     name: "",
@@ -14,7 +15,7 @@ const Profile = () => {
     experience: ""
   });
 
-  const [loading, setLoading] = useState(false); // ✅ optional UX
+  const [loading, setLoading] = useState(false);
 
   // ✅ Load Profile
   useEffect(() => {
@@ -60,7 +61,6 @@ const Profile = () => {
 
       alert("Profile saved ✅");
 
-      // ✅ Navigate to Jobs page (IMPORTANT)
       navigate("/jobs");
 
     } catch (err) {
@@ -72,59 +72,94 @@ const Profile = () => {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Complete Profile</h2>
+    <>
+      {/* ✅ Navbar */}
+      <Navbar />
 
-      <input
-        type="text"
-        name="name"
-        placeholder="Name"
-        value={form.name}
-        onChange={handleChange}
-      />
-      <br /><br />
+      <div style={styles.container}>
+        <h2>Complete Profile</h2>
 
-      <input
-        type="text"
-        name="city"
-        placeholder="City"
-        value={form.city}
-        onChange={handleChange}
-      />
-      <br /><br />
+        <input
+          style={styles.input}
+          type="text"
+          name="name"
+          placeholder="Name"
+          value={form.name}
+          onChange={handleChange}
+        />
 
-      <input
-        type="text"
-        name="skills"
-        placeholder="Skills (e.g. Driver, Helper)"
-        value={form.skills}
-        onChange={handleChange}
-      />
-      <br /><br />
+        <input
+          style={styles.input}
+          type="text"
+          name="city"
+          placeholder="City"
+          value={form.city}
+          onChange={handleChange}
+        />
 
-      <input
-        type="number"
-        name="age"
-        placeholder="Age"
-        value={form.age}
-        onChange={handleChange}
-      />
-      <br /><br />
+        <input
+          style={styles.input}
+          type="text"
+          name="skills"
+          placeholder="Skills (e.g. Driver, Helper)"
+          value={form.skills}
+          onChange={handleChange}
+        />
 
-      <input
-        type="number"
-        name="experience"
-        placeholder="Experience (years)"
-        value={form.experience}
-        onChange={handleChange}
-      />
-      <br /><br />
+        <input
+          style={styles.input}
+          type="number"
+          name="age"
+          placeholder="Age"
+          value={form.age}
+          onChange={handleChange}
+        />
 
-      <button onClick={handleSubmit} disabled={loading}>
-        {loading ? "Saving..." : "Save Profile"}
-      </button>
-    </div>
+        <input
+          style={styles.input}
+          type="number"
+          name="experience"
+          placeholder="Experience (years)"
+          value={form.experience}
+          onChange={handleChange}
+        />
+
+        <button style={styles.button} onClick={handleSubmit} disabled={loading}>
+          {loading ? "Saving..." : "Save Profile"}
+        </button>
+      </div>
+    </>
   );
+};
+
+const styles = {
+  container: {
+    maxWidth: "400px",
+    margin: "30px auto",
+    padding: "20px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "12px",
+    border: "1px solid #ddd",
+    borderRadius: "12px",
+    background: "#fff",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.08)"
+  },
+
+  input: {
+    padding: "10px",
+    borderRadius: "6px",
+    border: "1px solid #ccc"
+  },
+
+  button: {
+    padding: "10px",
+    border: "none",
+    borderRadius: "6px",
+    backgroundColor: "#007bff",
+    color: "white",
+    cursor: "pointer"
+  }
 };
 
 export default Profile;
