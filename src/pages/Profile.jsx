@@ -12,10 +12,12 @@ const Profile = () => {
     city: "",
     skills: "",
     age: "",
-    experience: ""
+    experience: "",
+    role: "CANDIDATE" // ✅ ADDED
   });
 
   const [loading, setLoading] = useState(false);
+  const [isRoleLocked, setIsRoleLocked] = useState(false); // ✅ ADDED
 
   // ✅ Load Profile
   useEffect(() => {
@@ -27,8 +29,14 @@ const Profile = () => {
             city: data.city || "",
             skills: data.skills || "",
             age: data.age || "",
-            experience: data.experience || ""
+            experience: data.experience || "",
+            role: data.role || "CANDIDATE" // ✅ ADDED
           });
+
+          // ✅ lock role if already present
+          if (data.name) {
+            setIsRoleLocked(true);
+          }
         })
         .catch((err) => {
           console.log("Profile load error:", err);
@@ -44,6 +52,14 @@ const Profile = () => {
     });
   };
 
+  // ✅ Handle Role Checkbox
+  const handleRoleChange = (e) => {
+    setForm({
+      ...form,
+      role: e.target.checked ? "RECRUITER" : "CANDIDATE"
+    });
+  };
+
   // ✅ Save Profile
   const handleSubmit = async () => {
     try {
@@ -56,12 +72,24 @@ const Profile = () => {
 
       await updateProfile({
         phone,
-        ...form
+        ...form // ✅ role included
       });
 
       alert("Profile saved ✅");
 
-      navigate("/jobs");
+      setIsRoleLocked(true); // ✅ lock role after first save
+
+    // ✅ ALWAYS sync localStorage with latest role
+    const user = JSON.parse(localStorage.getItem("user")) || {};
+    user.role = form.role;
+    localStorage.setItem("user", JSON.stringify(user));
+
+    // ✅ use updated role from localStorage
+    if (form.role === "RECRUITER") {
+        navigate("/recruiter");
+    } else {
+        navigate("/jobs");
+    }
 
     } catch (err) {
       console.log(err);
@@ -124,6 +152,17 @@ const Profile = () => {
           onChange={handleChange}
         />
 
+        {/* ✅ ✅ NEW: Recruiter Checkbox */}
+        <label style={styles.checkboxLabel}>
+          <input
+            type="checkbox"
+            checked={form.role === "RECRUITER"}
+            onChange={handleRoleChange}
+            disabled={isRoleLocked} // ✅ disable after save
+          />
+          Post job (hire workers)
+        </label>
+
         <button style={styles.button} onClick={handleSubmit} disabled={loading}>
           {loading ? "Saving..." : "Save Profile"}
         </button>
@@ -150,6 +189,13 @@ const styles = {
     padding: "10px",
     borderRadius: "6px",
     border: "1px solid #ccc"
+  },
+
+  checkboxLabel: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    fontSize: "14px"
   },
 
   button: {
