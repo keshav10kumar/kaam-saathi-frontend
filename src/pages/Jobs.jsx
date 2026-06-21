@@ -6,6 +6,10 @@ function Jobs() {
   const [jobs, setJobs] = useState([]);
   const [appliedJobs, setAppliedJobs] = useState([]);
 
+  // ✅ NEW STATES
+  const [city, setCity] = useState("");
+  const [keyword, setKeyword] = useState("");
+
   useEffect(() => {
     fetchJobs();
   }, []);
@@ -16,6 +20,25 @@ function Jobs() {
       setJobs(res.data);
     } catch (err) {
       console.error("Error fetching jobs:", err);
+    }
+  };
+
+  // ✅ NEW: SEARCH FUNCTION
+  const handleSearch = async () => {
+    try {
+      // if both empty → fetch all (no change in behavior)
+      if (!city && !keyword) {
+        fetchJobs();
+        return;
+      }
+
+      const res = await api.get(
+        `/jobs/search?city=${city}&keyword=${keyword}`
+      );
+
+      setJobs(res.data);
+    } catch (err) {
+      console.error("Search failed:", err);
     }
   };
 
@@ -36,11 +59,31 @@ function Jobs() {
 
   return (
     <>
-      {/* ✅ Navbar Added */}
       <Navbar />
 
       <div style={styles.container}>
         <h2>Available Jobs</h2>
+
+        {/* ✅ ✅ NEW SEARCH UI */}
+        <div style={styles.searchBox}>
+          <input
+            style={styles.input}
+            placeholder="Search by city"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+          />
+
+          <input
+            style={styles.input}
+            placeholder="Keyword (driver, helper)"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+          />
+
+          <button style={styles.searchBtn} onClick={handleSearch}>
+            Search
+          </button>
+        </div>
 
         {jobs.length === 0 && <p>No jobs found</p>}
 
@@ -99,7 +142,29 @@ const styles = {
     padding: "20px"
   },
 
-  // ✅ Improved Card UI
+  // ✅ NEW
+  searchBox: {
+    display: "flex",
+    gap: "10px",
+    marginBottom: "15px"
+  },
+
+  input: {
+    padding: "8px",
+    borderRadius: "6px",
+    border: "1px solid #ccc",
+    flex: 1
+  },
+
+  searchBtn: {
+    padding: "8px 12px",
+    border: "none",
+    borderRadius: "6px",
+    backgroundColor: "#007bff",
+    color: "white",
+    cursor: "pointer"
+  },
+
   card: {
     border: "1px solid #ddd",
     padding: "16px",

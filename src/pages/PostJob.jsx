@@ -1,10 +1,13 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios";
 import Navbar from "../components/Navbar";
 
 const PostJob = () => {
   const navigate = useNavigate();
+  const { jobId } = useParams();
+
+  const isEdit = !!jobId;
 
   const [form, setForm] = useState({
     title: "",
@@ -15,6 +18,25 @@ const PostJob = () => {
   });
 
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (isEdit) {
+      fetchJob();
+    }
+  }, []);
+
+  const fetchJob = async () => {
+    try {
+      const res = await api.get("/jobs");
+      const job = res.data.find((j) => j.id == jobId);
+
+      if (job) {
+        setForm(job);
+      }
+    } catch (err) {
+      console.error("Error loading job:", err);
+    }
+  };
 
   const handleChange = (e) => {
     setForm({
@@ -31,19 +53,20 @@ const PostJob = () => {
       }
 
       setLoading(true);
-
-    // ✅ DEFINE userId here
       const userId = localStorage.getItem("userId");
 
-      await api.post(`/jobs?userId=${userId}`, form);
-
-      alert("Job posted successfully ✅");
+      if (isEdit) {
+        await api.put(`/jobs/${jobId}?userId=${userId}`, form);
+        alert("Job updated ✅");
+      } else {
+        await api.post(`/jobs?userId=${userId}`, form);
+        alert("Job posted ✅");
+      }
 
       navigate("/recruiter");
-
     } catch (err) {
-      console.error("Error posting job:", err);
-      alert("Failed to post job ❌");
+      console.error(err);
+      alert("Operation failed ❌");
     } finally {
       setLoading(false);
     }
@@ -54,7 +77,7 @@ const PostJob = () => {
       <Navbar />
 
       <div style={styles.container}>
-        <h2>Post New Job</h2>
+        <h2>{isEdit ? "Edit Job" : "Post New Job"}</h2>
 
         <input
           style={styles.input}
@@ -89,7 +112,7 @@ const PostJob = () => {
         />
 
         <button style={styles.button} onClick={handleSubmit} disabled={loading}>
-          {loading ? "Posting..." : "Post Job"}
+          {loading ? "Saving..." : isEdit ? "Update Job" : "Post Job"}
         </button>
       </div>
     </>
@@ -109,13 +132,11 @@ const styles = {
     background: "#fff",
     boxShadow: "0 4px 10px rgba(0,0,0,0.08)"
   },
-
   input: {
     padding: "10px",
     borderRadius: "6px",
     border: "1px solid #ccc"
   },
-
   button: {
     padding: "10px",
     border: "none",

@@ -20,6 +20,7 @@ function App() {
         <Route path="/recruiter" element={<RecruiterDashboard />} />
         <Route path="/recruiter/jobs/:jobId/applications" element={<ApplicantsPage />} />
         <Route path="/recruiter/post-job" element={<PostJob />} />
+        <Route path="/recruiter/edit-job/:jobId" element={<PostJob />} />
       </Routes>
     </Router>
   );
