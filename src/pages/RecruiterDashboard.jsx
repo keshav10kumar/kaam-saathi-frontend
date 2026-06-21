@@ -51,6 +51,10 @@ const RecruiterDashboard = () => {
           + Post New Job
         </button>
 
+        {/* ✅ NEW: Search Candidates */}
+        <button style={styles.createBtn} onClick={() => navigate("/recruiter/candidates")}>
+  🔍         Search Candidates
+        </button>
         {jobs.length === 0 && <p>No jobs posted yet</p>}
 
 {jobs.map((job) => (
