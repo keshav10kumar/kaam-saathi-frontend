@@ -122,7 +122,8 @@ const styles = {
     borderRadius: "6px",
     backgroundColor: "#25D366",
     color: "white",
-    cursor: "pointer"
+    cursor: "pointer",
+    marginLeft: "5px"
   }
 };
 
