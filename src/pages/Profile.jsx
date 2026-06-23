@@ -13,7 +13,8 @@ const Profile = () => {
     skills: "",
     age: "",
     experience: "",
-    role: "CANDIDATE" // ✅ ADDED
+    role: "CANDIDATE",
+    gender: ""
   });
 
   const [loading, setLoading] = useState(false);
@@ -30,7 +31,8 @@ const Profile = () => {
             skills: data.skills || "",
             age: data.age || "",
             experience: data.experience || "",
-            role: data.role || "CANDIDATE" // ✅ ADDED
+            role: data.role || "CANDIDATE",
+            gender: data.gender || ""
           });
 
           // ✅ lock role if already present
@@ -125,6 +127,20 @@ const Profile = () => {
           onChange={handleChange}
         />
 
+
+        <select
+            name="gender"
+            value={form.gender}
+            onChange={handleChange}
+            style={styles.input}
+        >
+            <option value="">Select Gender</option>
+            <option value="MALE">Male</option>
+            <option value="FEMALE">Female</option>
+            <option value="OTHER">Other</option>
+        </select>
+
+
         <input
           style={styles.input}
           type="text"
@@ -160,7 +176,7 @@ const Profile = () => {
             onChange={handleRoleChange}
             disabled={isRoleLocked} // ✅ disable after save
           />
-          Post job (hire workers)
+          I am a recruiter
         </label>
 
         <button style={styles.button} onClick={handleSubmit} disabled={loading}>
